@@ -6,7 +6,7 @@
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  *
- * @providesModule DraftEditorBlock.react
+ * @providesModule DraftEditorContentBlock.react
  * @typechecks
  * @flow
  */
@@ -52,10 +52,10 @@ type Props = {
 /**
  * The default block renderer for a `DraftEditor` component.
  *
- * A `DraftEditorBlock` is able to render a given `ContentBlock` to its
+ * A `DraftEditorContentBlock` is able to render a given `ContentBlock` to its
  * appropriate decorator and inline style components.
  */
-class DraftEditorBlock extends React.Component {
+class DraftEditorContentBlock extends React.Component {
   shouldComponentUpdate(nextProps: Props): boolean {
     return (
       this.props.block !== nextProps.block ||
@@ -222,4 +222,4 @@ function isBlockOnSelectionEdge(
   );
 }
 
-module.exports = DraftEditorBlock;
+module.exports = DraftEditorContentBlock;

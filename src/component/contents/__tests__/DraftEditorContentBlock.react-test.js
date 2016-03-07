@@ -44,7 +44,7 @@ var DecoratorSpan = React.createClass({
   },
 });
 
-var DraftEditorBlock = require('DraftEditorBlock.react');
+var DraftEditorContentBlock = require('DraftEditorContentBlock.react');
 
 // Define a class to satisfy typechecks.
 class Decorator {
@@ -126,7 +126,7 @@ function assertLeaves(renderedBlock, leafProps) {
   });
 }
 
-describe('DraftEditorBlock.react', () => {
+describe('DraftEditorContentBlock.react', () => {
   Style.getScrollParent.mockReturnValue(window);
   window.scrollTo = jest.genMockFn();
   getElementPosition.mockReturnValue({
@@ -148,7 +148,7 @@ describe('DraftEditorBlock.react', () => {
     it('must render a leaf node', () => {
       var props = getProps(getHelloBlock());
       var block = ReactTestUtils.renderIntoDocument(
-        <DraftEditorBlock {...props} />
+        <DraftEditorContentBlock {...props} />
       );
 
       var rendered = reactComponentExpect(block)
@@ -179,7 +179,7 @@ describe('DraftEditorBlock.react', () => {
 
       var props = getProps(helloBlock);
       var block = ReactTestUtils.renderIntoDocument(
-        <DraftEditorBlock {...props} />
+        <DraftEditorContentBlock {...props} />
       );
 
       var rendered = reactComponentExpect(block)
@@ -212,7 +212,7 @@ describe('DraftEditorBlock.react', () => {
 
       var container = document.createElement('div');
       ReactDOM.render(
-        <DraftEditorBlock {...props} />,
+        <DraftEditorContentBlock {...props} />,
         container
       );
 
@@ -225,7 +225,7 @@ describe('DraftEditorBlock.react', () => {
       expect(props.block).not.toBe(nextProps.block);
 
       ReactDOM.render(
-        <DraftEditorBlock {...nextProps} />,
+        <DraftEditorContentBlock {...nextProps} />,
         container
       );
 
@@ -238,7 +238,7 @@ describe('DraftEditorBlock.react', () => {
 
       var container = document.createElement('div');
       ReactDOM.render(
-        <DraftEditorBlock {...props} />,
+        <DraftEditorContentBlock {...props} />,
         container
       );
 
@@ -255,7 +255,7 @@ describe('DraftEditorBlock.react', () => {
       expect(props.tree).not.toBe(nextProps.tree);
 
       ReactDOM.render(
-        <DraftEditorBlock {...nextProps} />,
+        <DraftEditorContentBlock {...nextProps} />,
         container
       );
 
@@ -268,7 +268,7 @@ describe('DraftEditorBlock.react', () => {
 
       var container = document.createElement('div');
       ReactDOM.render(
-        <DraftEditorBlock {...props} />,
+        <DraftEditorContentBlock {...props} />,
         container
       );
 
@@ -278,7 +278,7 @@ describe('DraftEditorBlock.react', () => {
       expect(props.direction).not.toBe(nextProps.direction);
 
       ReactDOM.render(
-        <DraftEditorBlock {...nextProps} />,
+        <DraftEditorContentBlock {...nextProps} />,
         container
       );
 
@@ -291,7 +291,7 @@ describe('DraftEditorBlock.react', () => {
 
       var container = document.createElement('div');
       ReactDOM.render(
-        <DraftEditorBlock {...props} />,
+        <DraftEditorContentBlock {...props} />,
         container
       );
 
@@ -304,7 +304,7 @@ describe('DraftEditorBlock.react', () => {
       };
 
       ReactDOM.render(
-        <DraftEditorBlock {...nextProps} />,
+        <DraftEditorContentBlock {...nextProps} />,
         container
       );
 
@@ -317,7 +317,7 @@ describe('DraftEditorBlock.react', () => {
 
       var container = document.createElement('div');
       ReactDOM.render(
-        <DraftEditorBlock {...props} />,
+        <DraftEditorContentBlock {...props} />,
         container
       );
 
@@ -325,7 +325,7 @@ describe('DraftEditorBlock.react', () => {
 
       // Render again with the exact same props as before.
       ReactDOM.render(
-        <DraftEditorBlock {...props} />,
+        <DraftEditorContentBlock {...props} />,
         container
       );
 
@@ -339,7 +339,7 @@ describe('DraftEditorBlock.react', () => {
 
       var container = document.createElement('div');
       ReactDOM.render(
-        <DraftEditorBlock {...props} />,
+        <DraftEditorContentBlock {...props} />,
         container
       );
 
@@ -356,7 +356,7 @@ describe('DraftEditorBlock.react', () => {
       // Render again with selection now moved elsewhere and the contents
       // unchanged.
       ReactDOM.render(
-        <DraftEditorBlock {...newProps} />,
+        <DraftEditorContentBlock {...newProps} />,
         container
       );
 
@@ -377,7 +377,7 @@ describe('DraftEditorBlock.react', () => {
 
       var container = document.createElement('div');
       var block = ReactDOM.render(
-        <DraftEditorBlock {...props} />,
+        <DraftEditorContentBlock {...props} />,
         container
       );
 
@@ -412,7 +412,7 @@ describe('DraftEditorBlock.react', () => {
 
       var container = document.createElement('div');
       var block = ReactDOM.render(
-        <DraftEditorBlock {...props} />,
+        <DraftEditorContentBlock {...props} />,
         container
       );
 
@@ -447,7 +447,7 @@ describe('DraftEditorBlock.react', () => {
 
       var container = document.createElement('div');
       var block = ReactDOM.render(
-        <DraftEditorBlock {...props} />,
+        <DraftEditorContentBlock {...props} />,
         container
       );
 
@@ -484,7 +484,7 @@ describe('DraftEditorBlock.react', () => {
 
       var container = document.createElement('div');
       var block = ReactDOM.render(
-        <DraftEditorBlock {...props} />,
+        <DraftEditorContentBlock {...props} />,
         container
       );
 
@@ -528,7 +528,7 @@ describe('DraftEditorBlock.react', () => {
 
         var container = document.createElement('div');
         ReactDOM.render(
-          <DraftEditorBlock {...props} />,
+          <DraftEditorContentBlock {...props} />,
           container
         );
 
@@ -543,7 +543,7 @@ describe('DraftEditorBlock.react', () => {
       it('must not scroll the window if unnecessary', () => {
         var container = document.createElement('div');
         ReactDOM.render(
-          <DraftEditorBlock {...props} />,
+          <DraftEditorContentBlock {...props} />,
           container
         );
 

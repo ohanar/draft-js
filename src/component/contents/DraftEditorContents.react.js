@@ -13,7 +13,7 @@
 
 'use strict';
 
-const DraftEditorBlock = require('DraftEditorBlock.react');
+const DraftEditorContentBlock = require('DraftEditorContentBlock.react');
 const DraftOffsetKey = require('DraftOffsetKey');
 const EditorState = require('EditorState');
 const React = require('React');
@@ -168,7 +168,7 @@ class DraftEditorContents extends React.Component {
             'data-offset-key': offsetKey,
             key,
           },
-          <DraftEditorBlock {...componentProps} />,
+          <DraftEditorContentBlock {...componentProps} />,
         );
       }
 
