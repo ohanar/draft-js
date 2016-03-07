@@ -12,117 +12,36 @@
  */
 
 'use strict';
+const RichTextBlock = require('RichTextBlock');
 
-var Immutable = require('immutable');
-
-var findRangesImmutable = require('findRangesImmutable');
-
-import type CharacterMetadata from 'CharacterMetadata';
-import type {DraftBlockType} from 'DraftBlockType';
-import type {DraftInlineStyle} from 'DraftInlineStyle';
-
-var {
-  List,
-  OrderedSet,
-  Record,
-} = Immutable;
-
-const EMPTY_SET = OrderedSet();
-
-var defaultRecord: {
-  key: string;
-  type: DraftBlockType;
-  text: string;
-  characterList: List<CharacterMetadata>;
-  depth: number;
-} = {
-  key: '',
-  type: 'unstyled',
-  text: '',
-  characterList: List(),
-  depth: 0,
-};
-
-var ContentBlockRecord = Record(defaultRecord);
-
-class ContentBlock extends ContentBlockRecord {
-  getKey(): string {
-    return this.get('key');
+export default class ContentBlock extends RichTextBlock {
+  constructor(obj) {
+    const {type, text, depth, characterList} = {type: 'unstyled', ...obj};
+    const data = {text, depth, characterList};
+    if (!text) {
+      delete data.text;
+    }
+    if (!depth) {
+      delete data.depth;
+    }
+    if (!characterList) {
+      delete data.characterList;
+    }
+    super({...obj, type, data});
   }
 
-  getType(): DraftBlockType {
-    return this.get('type');
-  }
-
-  getText(): string {
-    return this.get('text');
-  }
-
-  getCharacterList(): List<CharacterMetadata> {
-    return this.get('characterList');
-  }
-
-  getLength(): number {
-    return this.getText().length;
+  set(key: string, value: mixed): ContentBlock {
+    switch (key) {
+      case 'text':
+      case 'characterList':
+      case 'depth':
+        return this.setIn(['data', key], value);
+      default:
+        return super.set(key, value);
+    }
   }
 
   getDepth(): number {
-    return this.get('depth');
-  }
-
-  getInlineStyleAt(offset: number): DraftInlineStyle {
-    var character = this.getCharacterList().get(offset);
-    return character ? character.getStyle() : EMPTY_SET;
-  }
-
-  getEntityAt(offset: number): ?string {
-    var character = this.getCharacterList().get(offset);
-    return character ? character.getEntity() : null;
-  }
-
-  /**
-   * Execute a callback for every contiguous range of styles within the block.
-   */
-  findStyleRanges(
-    filterFn: (value: CharacterMetadata) => boolean,
-    callback: (start: number, end: number) => void
-  ): void {
-    findRangesImmutable(
-      this.getCharacterList(),
-      haveEqualStyle,
-      filterFn,
-      callback
-    );
-  }
-
-  /**
-   * Execute a callback for every contiguous range of entities within the block.
-   */
-  findEntityRanges(
-    filterFn: (value: CharacterMetadata) => boolean,
-    callback: (start: number, end: number) => void
-  ): void {
-    findRangesImmutable(
-      this.getCharacterList(),
-      haveEqualEntity,
-      filterFn,
-      callback
-    );
+    return this.getData().get('depth');
   }
 }
-
-function haveEqualStyle(
-  charA: CharacterMetadata,
-  charB: CharacterMetadata
-): boolean {
-  return charA.getStyle() === charB.getStyle();
-}
-
-function haveEqualEntity(
-  charA: CharacterMetadata,
-  charB: CharacterMetadata
-): boolean {
-  return charA.getEntity() === charB.getEntity();
-}
-
-module.exports = ContentBlock;

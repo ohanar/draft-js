@@ -15,6 +15,7 @@
 
 var BlockMapBuilder = require('BlockMapBuilder');
 var CharacterMetadata = require('CharacterMetadata');
+const Block = require('Block');
 var ContentBlock = require('ContentBlock');
 var ContentState = require('ContentState');
 var Immutable = require('immutable');
@@ -67,8 +68,13 @@ var selectionState = new SelectionState({
 });
 
 var blockMap = BlockMapBuilder.createFromArray(BLOCKS);
+const rootBlock = new Block({
+  key: 'root',
+  type: 'plain-container',
+  children: blockMap,
+});
 var contentState = new ContentState({
-  blockMap,
+  rootBlock,
   selectionBefore: selectionState,
   selectionAfter: selectionState,
 });

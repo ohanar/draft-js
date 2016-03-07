@@ -12,7 +12,7 @@
 
 'use strict';
 
-import type ContentBlock from 'ContentBlock';
+import type Block from 'Block';
 import type {OrderedMap} from 'immutable';
 
-export type BlockMap = OrderedMap<string, ContentBlock>;
+export type BlockMap = OrderedMap<string, Block>;

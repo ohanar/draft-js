@@ -18,7 +18,7 @@ var emptyFunction = require('emptyFunction');
 var findRangesImmutable = require('findRangesImmutable');
 
 import type CharacterMetadata from 'CharacterMetadata';
-import type ContentBlock from 'ContentBlock';
+import type RichTextBlock from 'RichTextBlock';
 import type {DraftDecoratorType} from 'DraftDecoratorType';
 
 var {
@@ -57,10 +57,10 @@ var DecoratorRange = Record(defaultDecoratorRange);
 
 var BlockTree = {
   /**
-   * Generate a block tree for a given ContentBlock/decorator pair.
+   * Generate a block tree for a given RichTextBlock/decorator pair.
    */
   generate: function(
-    block: ContentBlock,
+    block: RichTextBlock,
     decorator: ?DraftDecoratorType
   ): List<DecoratorRange> {
     var textLength = block.getLength();

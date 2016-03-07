@@ -15,8 +15,9 @@
 
 const BlockMapBuilder = require('BlockMapBuilder');
 const CharacterMetadata = require('CharacterMetadata');
+const Block = require('Block');
 const ContentBlock = require('ContentBlock');
-const Immutable = require('immutable');
+const {List, Record, Repeat} = require('immutable');
 const SelectionState = require('SelectionState');
 
 const generateRandomKey = require('generateRandomKey');
@@ -24,23 +25,25 @@ const sanitizeDraftText = require('sanitizeDraftText');
 
 import type {BlockMap} from 'BlockMap';
 
-const {List, Record, Repeat} = Immutable;
-
 const defaultRecord: {
-  blockMap: ?BlockMap;
+  rootBlock: Block;
   selectionBefore: ?SelectionState;
   selectionAfter: ?SelectionState;
 } = {
-  blockMap: null,
+  rootBlock: new Block(),
   selectionBefore: null,
   selectionAfter: null,
 };
 
 const ContentStateRecord = Record(defaultRecord);
 
-class ContentState extends ContentStateRecord {
+export default class ContentState extends ContentStateRecord {
+  getRootBlock(): Block {
+    return this.get('rootBlock');
+  }
+
   getBlockMap(): BlockMap {
-    return this.get('blockMap');
+    return this.getRootBlock().getChildren();
   }
 
   getSelectionBefore(): SelectionState {
@@ -51,51 +54,45 @@ class ContentState extends ContentStateRecord {
     return this.get('selectionAfter');
   }
 
-  getBlockForKey(key: string): ContentBlock {
-    var block: ContentBlock = this.getBlockMap().get(key);
-    return block;
-  }
-
-  getKeyBefore(key: string): ?string {
-    return this.getBlockMap()
-      .reverse()
-      .keySeq()
-      .skipUntil(v => v === key)
-      .skip(1)
-      .first();
+  // TODO: decide what to do with the following 7
+  // functions -- their functionality has been put into
+  // the block class
+  getBlockForKey(key: string): Block {
+    return this.getRootBlock().getChild(key);
   }
 
   getKeyAfter(key: string): ?string {
-    return this.getBlockMap()
-      .keySeq()
-      .skipUntil(v => v === key)
-      .skip(1)
-      .first();
+    const block = this.getBlockAfter(key);
+    if (block) {
+      return block.getKey();
+    }
+  }
+
+  getKeyBefore(key: string): ?string {
+    const block = this.getBlockBefore(key);
+    if (block) {
+      return block.getKey();
+    }
   }
 
   getBlockAfter(key: string): ?ContentBlock {
-    return this.getBlockMap()
-      .skipUntil((_, k) => k === key)
-      .skip(1)
-      .first();
+    return this.getRootBlock().getChildAfter(key);
   }
 
   getBlockBefore(key: string): ?ContentBlock {
-    return this.getBlockMap()
-      .reverse()
-      .skipUntil((_, k) => k === key)
-      .skip(1)
-      .first();
+    return this.getRootBlock().getChildBefore(key);
   }
 
   getBlocksAsArray(): Array<ContentBlock> {
-    return this.getBlockMap().toArray();
+    return this.getRootBlock().getChildrenAsArray();
   }
 
   getLastBlock(): ContentBlock {
-    return this.getBlockMap().last();
+    return this.getRootBlock().getLastChild();
   }
 
+  // TODO: figure out some way to make this work
+  // when not all block's are text
   getPlainText(delimiter?: string): string {
     return this.getBlockMap()
       .map(block => {
@@ -104,6 +101,20 @@ class ContentState extends ContentStateRecord {
       .join(delimiter || '\n');
   }
 
+  // TODO: remove once there are no more dependences
+  // on the old structure
+  set(key: string, value: mixed): ContentState {
+    switch (key) {
+      case 'blockMap':
+        return this.setIn(['rootBlock', 'children'], value);
+      default:
+        return super.set(key, value);
+    }
+  }
+
+  // TODO: figure out some way to make this work
+  // when not all block's are tex
+  // (maybe have something like an isEmpty? method)
   hasText(): boolean {
     var blockMap = this.getBlockMap();
     return (
@@ -113,12 +124,17 @@ class ContentState extends ContentStateRecord {
   }
 
   static createFromBlockArray(
-    blocks: Array<ContentBlock>
+    blocks: Array<Block>
   ): ContentState {
-    var blockMap = BlockMapBuilder.createFromArray(blocks);
-    var selectionState = SelectionState.createEmpty(blockMap.first().getKey());
+    const blockMap = BlockMapBuilder.createFromArray(blocks);
+    const selectionState = SelectionState.createEmpty(blockMap.first().getKey());
+    const rootBlock = new Block({
+      key: generateRandomKey(),
+      type: 'plain-container',
+      children: blockMap,
+    });
     return new ContentState({
-      blockMap,
+      rootBlock,
       selectionBefore: selectionState,
       selectionAfter: selectionState,
     });
@@ -143,5 +159,3 @@ class ContentState extends ContentStateRecord {
     return ContentState.createFromBlockArray(blocks);
   }
 }
-
-module.exports = ContentState;

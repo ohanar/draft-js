@@ -14,6 +14,7 @@
 jest.autoMockOff();
 
 var ContentBlock = require('ContentBlock');
+const Block = require('Block');
 var ContentState = require('ContentState');
 var EditorBidiService = require('EditorBidiService');
 var Immutable = require('immutable');
@@ -47,7 +48,12 @@ describe('EditorBidiService', () => {
     var keys = Seq(blocks.map(b => b.getKey()));
     var values = Seq(blocks);
     var blockMap = OrderedMap(keys.zip(values));
-    return new ContentState({blockMap});
+    const rootBlock = new Block({
+      key: 'root',
+      type: 'plain-container',
+      children: blockMap,
+    });
+    return new ContentState({rootBlock});
   }
 
   it('must create a new map', () => {

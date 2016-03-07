@@ -17,6 +17,7 @@ jest
 
 var BlockMapBuilder = require('BlockMapBuilder');
 var ContentBlock = require('ContentBlock');
+const Block = require('Block');
 var ContentState = require('ContentState');
 
 var SINGLE_BLOCK = [
@@ -37,8 +38,13 @@ describe('ContentState', () => {
   function getConfigForText(textBlocks) {
     var contentBlocks = getContentBlocks(textBlocks);
     var blockMap = BlockMapBuilder.createFromArray(contentBlocks);
+    const rootBlock = new Block({
+      key: 'root',
+      type: 'plain-container',
+      children: blockMap,
+    });
     return {
-      blockMap,
+      rootBlock,
       selectionBefore: new SelectionState(),
       selectionAfter: new SelectionState(),
     };
